@@ -53,8 +53,7 @@ app = angular.module('neo4jApp', [
   'ui.sortable'
   'angularMoment'
   'ngSanitize'
-])
-.config((localStorageServiceProvider, authProvider) ->
+]).config((localStorageServiceProvider, authProvider) ->
   localStorageServiceProvider.setNotify(yes, yes)
   authProvider.init(
     domain: 'neo4j-sync.auth0.com'

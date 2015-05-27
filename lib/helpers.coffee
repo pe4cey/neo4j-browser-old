@@ -158,5 +158,3 @@ class neo.helpers
       
     @getServerHostname = (Settings) ->
       if Settings.host then Settings.host else location.href
-        
-      hostname in whitelisted_hosts

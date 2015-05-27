@@ -66,6 +66,7 @@ angular.module('neo4jApp.controllers')
               allow_connections = [no, 'false', 'no'].indexOf($scope.kernel['dbms.security.allow_outgoing_browser_connections']) < 0 ? yes : no
               refreshAllowOutgoingConnections allow_connections
             ).error((r)-> $scope.kernel = {})
+          fetchJMX()
 
         refreshAllowOutgoingConnections = (allow_connections) ->
           return unless $scope.neo4j.config.allow_outgoing_browser_connections != allow_connections
