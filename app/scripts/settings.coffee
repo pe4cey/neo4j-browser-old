@@ -18,8 +18,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
-#baseURL = 'http://localhost:7474'
-baseURL = ''
+baseURL = 'http://localhost:7474'
+#baseURL = ''
 restAPI = "#{baseURL}/db/data"
 
 angular.module('neo4jApp.settings', ['neo4jApp.utils'])

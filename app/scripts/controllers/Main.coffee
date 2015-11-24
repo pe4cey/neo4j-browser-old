@@ -43,7 +43,7 @@ angular.module('neo4jApp.controllers')
           $scope.propertyKeys = Server.propertyKeys $scope.propertyKeys
           $scope.server = Server.info $scope.server
           $scope.version = Server.version $scope.version
-          $scope.host = $window.location.host
+          $scope.host = "http://localhost:7474"
 
           # gather info from jmx
           Server.jmx(
