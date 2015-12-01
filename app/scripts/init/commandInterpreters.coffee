@@ -213,6 +213,31 @@ angular.module('neo4jApp')
           q.promise
 
       ]
+    FrameProvider.interpreters.push
+      type: 'connection'
+      templateUrl: 'views/frame-connection.html'
+      matches: ["#{cmdchar}connection"]
+      exec: ['Settings', (Settings) ->
+        (input, q) ->
+
+          matches = /^[^\w]*connection\s?([\S\s]+)?$/.exec(input)
+          unless matches.length >= 2
+            url = matches[1]
+
+            Settings.endpoint.console = "#{url}/db/manage/server/console"
+            Settings.endpoint.version = "#{url}/db/manage/server/version"
+            Settings.endpoint.jmx = "#{url}/db/manage/server/jmx/query"
+            Settings.endpoint.rest = url
+            Settings.endpoint.cypher = "#{url}/cypher"
+            Settings.endpoint.transaction = "#{url}/transaction"
+            Settings.endpoint.authUser = "#{url}/user"
+            Settings.host = url
+
+            q.resolve(Settings)
+
+            q.promise
+
+      ]
 
     # about handler
     # FrameProvider.interpreters.push
@@ -295,6 +320,18 @@ angular.module('neo4jApp')
       templateUrl: 'views/frame-disconnect.html'
       matches:  (input) ->
         pattern = new RegExp("^#{cmdchar}server disconnect")
+        input.match(pattern)
+      exec: ['Settings', 'AuthService', (Settings, AuthService) ->
+        (input, q) ->
+          q.resolve()
+      ]
+
+    FrameProvider.interpreters.push
+      type: 'auth'
+      fullscreenable: false
+      templateUrl: 'views/frame-connect.html'
+      matches:  (input) ->
+        pattern = new RegExp("^#{cmdchar}server resconnect")
         input.match(pattern)
       exec: ['Settings', 'AuthService', (Settings, AuthService) ->
         (input, q) ->

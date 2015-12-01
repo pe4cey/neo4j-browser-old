@@ -77,3 +77,21 @@ angular.module('neo4jApp.settings')
 .run(['SettingsStore', (SettingsStore) ->
   SettingsStore.load()
 ])
+
+angular.module('neo4jApp.settings')
+.service('ConnectionStore', ['Settings', 'SettingsStore'
+  (Settings, SettingsStore) ->
+    update: (url) ->
+      restAPI = "#{baseURL}/db/data"
+      Settings.endpoint.console = "#{url}/db/manage/server/console"
+      Settings.endpoint.version = "#{url}/db/manage/server/version"
+      Settings.endpoint.jmx = "#{url}/db/manage/server/jmx/query"
+      Settings.endpoint.rest = restAPI
+      Settings.endpoint.cypher = "#{restAPI}/cypher"
+      Settings.endpoint.transaction = "#{restAPI}/transaction"
+      Settings.endpoint.authUser = "#{url}/user"
+      Settings.host = url
+
+      SettingsStore.save()
+
+])

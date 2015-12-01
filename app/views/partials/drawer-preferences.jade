@@ -52,6 +52,13 @@
 
     h5 Network Connection
     .form-group
+      label(for="baseUrl", tooltip="Connection string", tooltip-placement="top")
+        | Connection String
+        input.form-control.input#baseUrl(type='string', ng-model="baseUrl")
+        button.btn.btn-popup(ng-click="connectTo()")
+          span Update
+
+      .form-group
       label(for="maxExecutionTime", tooltip="Query timeout in seconds.", tooltip-placement="top")
         | Max Execution Time
         input.form-control.input#maxExecutionTime(type='number', ng-model="settings.maxExecutionTime", ng-change="save()")

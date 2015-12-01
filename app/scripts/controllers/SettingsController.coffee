@@ -27,10 +27,16 @@ angular.module('neo4jApp.controllers')
     '$log'
     'Settings'
     'SettingsStore'
-    ($scope, $sce, $log, Settings, SettingsStore) ->
+    'ConnectionStore'
+    'Editor'
+    ($scope, $sce, $log, Settings, SettingsStore, ConnectionStore, Editor) ->
 
+      $scope.baseUrl = Settings.host
 
       $scope.settings = Settings
+      $scope.connectTo = () ->
+        ConnectionStore.update $scope.baseUrl
+        Editor.execScript("#{Settings.cmdchar}server connect")
 
       $scope.save = () ->
         SettingsStore.save()

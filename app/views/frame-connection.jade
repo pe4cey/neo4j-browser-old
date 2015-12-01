@@ -1,0 +1,24 @@
+div(ng-controller="AuthCtrl")
+  .outer
+    include partials/frame-common-actions
+    .inner
+      .view-result
+        article.help
+          .container-fluid
+            .section.row-fluid.summary
+              .summary.col-sm-3
+                h3 Connect to Neo4j
+                p.lead
+                  | We cannot connect to a Neo4j database.
+              .details.col-sm-4.panel.panel-default
+                .panel-body
+                  .form-group
+                    label(for="baseUrl", tooltip="Connection string", tooltip-placement="top")
+                      | Connection String
+                    input.form-control.input#baseUrl(type='string', ng-model="baseUrl")
+                    button.btn.btn-default.btn-primary(id="connect_button", ng-click="setConnectionString()", style="margin: 0") Connect
+
+              .details.col-sm-4(ng-hide="CurrentUser.isAuthenticated()")
+                include partials/arc-login
+              .details.col-sm-4(ng-show="CurrentUser.isAuthenticated()")
+                include partials/arc-loggedin

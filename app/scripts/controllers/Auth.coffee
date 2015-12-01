@@ -28,11 +28,14 @@ angular.module('neo4jApp.controllers')
     'Frame'
     'CurrentUser'
     'Settings'
+    'ConnectionStore'
     '$timeout'
-    ($scope, AuthService, ConnectionStatusService, Frame, CurrentUser, Settings, $timeout) ->
+    ($scope, AuthService, ConnectionStatusService, Frame, CurrentUser, Settings, ConnectionStore, $timeout) ->
+      $scope.baseUrl = Settings.host
       $scope.username = 'neo4j'
       $scope.password = ''
       $scope.current_password = ''
+      $scope.can_connect_to_server = false
       $scope.connection_summary = ConnectionStatusService.getConnectionStatusSummary()
       $scope.static_user = $scope.connection_summary.user
       $scope.static_is_authenticated = $scope.connection_summary.is_connected
@@ -92,6 +95,11 @@ angular.module('neo4jApp.controllers')
           $scope.static_user = ConnectionStatusService.connectedAsUser()
           $scope.static_is_authenticated = ConnectionStatusService.isConnected()
         )
+
+      $scope.setConnectionString = ->
+        ConnectionStore.update $scope.baseUrl
+        Frame.createOne({input:"#{Settings.cmdchar}server connect"})
+        $scope.authenticate()
 
       setPolicyMessage()
   ]

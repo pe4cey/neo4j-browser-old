@@ -137,22 +137,26 @@ angular.module('neo4jApp.controllers')
         fetchServerInfo()
 
         pickFirstFrame = (ls_setup = no) ->
-          CurrentUser.autoLogin()
-          AuthService.hasValidAuthorization().then(
-            ->
-              Frame.closeWhere "#{Settings.cmdchar}server connect"
-              Frame.create({input:"#{Settings.initCmd}"})
-            ,
-            (r) ->
-              if r.status is 404
+          if ConnectionStatusService.isConnected()
+
+            CurrentUser.autoLogin()
+            AuthService.hasValidAuthorization().then(
+              ->
                 Frame.closeWhere "#{Settings.cmdchar}server connect"
                 Frame.create({input:"#{Settings.initCmd}"})
-              else
-                if !ls_setup and CurrentUser.isAuthenticated()
-                  tryAutoConnect()
-                  return
-                Frame.createOne({input:"#{Settings.cmdchar}server connect"})
-          )
+              ,
+              (r) ->
+                if r.status is 404
+                  Frame.closeWhere "#{Settings.cmdchar}server connect"
+                  Frame.create({input:"#{Settings.initCmd}"})
+                else
+                  if !ls_setup and CurrentUser.isAuthenticated()
+                    tryAutoConnect()
+                    return
+                  Frame.createOne({input:"#{Settings.cmdchar}server connect"})
+            )
+          else
+            Frame.createOne({input:"#{Settings.cmdchar}connection"})
         pickFirstFrame()
 
         tryAutoConnect = ->
