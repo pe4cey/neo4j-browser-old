@@ -1,12 +1,16 @@
 {
   "name": "neo4j-browser",
   "version": "2.0.0-SNAPSHOT",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.13.3"
+  },
   "engines": {
     "node": ">=0.10.2"
   },
   "scripts": {
-    "test": "grunt test"
+    "start": "npm run build && node index.js",
+    "test": "grunt test",
+    "build": "grunt build"
   },
   "devDependencies": {
     "bower": "^1.4.1",
