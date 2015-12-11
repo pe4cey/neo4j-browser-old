@@ -23,6 +23,46 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 do ->
   noop = ->
 
+  removeNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      circles = selection.selectAll('circle.remove_node').data((node) -> if node.selected then [node] else [])
+      radius = 10
+
+      circles.enter()
+      .append('circle')
+      .classed('remove_node', true)
+      .attr
+        border: (node) -> viz.style.forNode(node).get('border-color')
+        cx: (node) -> node.radius/ Math.sqrt(2)
+        cy: (node) -> 1 - node.radius/ Math.sqrt(2)
+        r: radius
+        fill: 'black'
+      .on('click', (node) -> viz.trigger('nodeClose', node))
+
+      circles.enter()
+      .append('text')
+      .text('\uf00d')
+      .attr
+        'text-anchor': 'middle'
+        'pointer-events': 'none'
+        'font-family': 'FontAwesome'
+        'font-size': '10px'
+        fill: 'white'
+        x: (node) -> node.radius/ Math.sqrt(2)
+        y: (node) -> 1 - node.radius/ Math.sqrt(2) + (radius/4)
+#      .on('mouseover', ->
+#        d3.select(this).style('border', 'black')
+#      )
+#      .on('mouseout', (node) ->
+#        d3.select(node).style('border', viz.style.forNode(node).get('border-color'))
+#      )
+
+
+
+      circles.exit().remove()
+    onTick: noop
+  )
+
   nodeOutline = new neo.Renderer(
     onGraphChange: (selection, viz) ->
       circles = selection.selectAll('circle.outline').data((node) -> [node])
@@ -152,6 +192,7 @@ do ->
   neo.renderers.node.push(nodeOutline)
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
+  neo.renderers.node.push(removeNode)
   neo.renderers.relationship.push(arrowPath)
   neo.renderers.relationship.push(relationshipType)
   neo.renderers.relationship.push(relationshipOverlay)
