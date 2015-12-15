@@ -54,6 +54,12 @@ angular.module('neo4jApp.controllers')
 
       selectedItem = null
 
+      closeContextMenu = (d) =>
+        d.selected = no
+        selectedItem = null
+        graphView.update()
+        selectItem(selectedItem)
+
       toggleSelection = (d) =>
         if d is selectedItem
           d?.selected = no
@@ -79,6 +85,10 @@ angular.module('neo4jApp.controllers')
           graphView.graph.pruneInternalRelationships()
           graphView.update()
 
+      nodeClicked = (d) ->
+        d.fixed = yes
+        toggleSelection(d)
+
       initGraphView = (graph) ->
 
         checkMaxNodesReached graph
@@ -92,14 +102,14 @@ angular.module('neo4jApp.controllers')
 
         graphView
         .on('nodeClicked', (d) ->
-          d.fixed = yes
-          toggleSelection(d)
+          nodeClicked d
         )
         .on('nodeClose', (d) ->
           GraphExplorer.removeNodesAndRelationships d, graph
           toggleSelection(d)
         )
         .on('nodeDblClicked', (d) ->
+          toggleSelection null
           d.minified = false
           return if d.expanded
           GraphExplorer.exploreNeighbours(d, graph, $scope.displayInternalRelationships)

@@ -36,6 +36,21 @@ text
     .ring
       opacity: .3
 
+.node
+  .small-ring
+    fill: none
+    opacity: 0
+    stroke: #444
+  &.selected
+    .small-ring
+      stroke: #888
+  &.selected:hover
+    .small-ring
+      stroke: #111
+  //&:hover, &.selected
+  //  .small-ring
+  //    opacity: .3
+
 .relationship
   .overlay
     opacity: 0
@@ -76,3 +91,8 @@ text
       cursor: auto
       &:hover
         color: #9b9da2
+
+.remove_node .expand_node
+  cursor: pointer
+  &:hover
+    border: 2px black solid

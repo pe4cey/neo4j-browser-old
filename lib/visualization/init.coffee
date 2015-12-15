@@ -23,40 +23,120 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 do ->
   noop = ->
 
+  contentMenuItems = 24
+  nodeRingStrokeSize = 8
+
+  menuItemX = (r, p) -> menuItemPosition(r, p).x
+  menuItemY = (r, p) -> menuItemPosition(r, p).y
+
+  menuItemPosition = (r, p) ->
+    r = r + (nodeRingStrokeSize * 2)
+    if r < 30 then r = 30
+    theta = (Math.PI*2) / contentMenuItems
+    angle = theta * p
+
+    x: r * Math.cos(angle)
+    y: r * Math.sin(angle)
+
   removeNode = new neo.Renderer(
     onGraphChange: (selection, viz) ->
       circles = selection.selectAll('circle.remove_node').data((node) -> if node.selected then [node] else [])
-      radius = 10
+      radius = 8
+      maxRadius = radius
 
       circles.enter()
       .append('circle')
       .classed('remove_node', true)
       .attr
-        border: (node) -> viz.style.forNode(node).get('border-color')
-        cx: (node) -> node.radius/ Math.sqrt(2)
-        cy: (node) -> 1 - node.radius/ Math.sqrt(2)
+        opacity: '0.5'
+        stroke: (node) -> 'black'
+        'stroke-width': (node) -> '2px'
+        cx: (node) -> menuItemX node.radius, 19
+        cy: (node) -> menuItemY node.radius, 19
         r: radius
-        fill: 'black'
-      .on('click', (node) -> viz.trigger('nodeClose', node))
+        fill: (node) -> viz.style.forNode(node).get('color')
+      .on('click', (node) ->
+          viz.trigger('nodeClose', node))
+      .on('mouseover', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr("r", maxRadius ).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr("r", radius ).attr('opacity', '0.5'))
 
       circles.enter()
       .append('text')
       .text('\uf00d')
       .attr
+        opacity: '0.5'
         'text-anchor': 'middle'
         'pointer-events': 'none'
         'font-family': 'FontAwesome'
-        'font-size': '10px'
-        fill: 'white'
-        x: (node) -> node.radius/ Math.sqrt(2)
-        y: (node) -> 1 - node.radius/ Math.sqrt(2) + (radius/4)
-#      .on('mouseover', ->
-#        d3.select(this).style('border', 'black')
-#      )
-#      .on('mouseout', (node) ->
-#        d3.select(node).style('border', viz.style.forNode(node).get('border-color'))
-#      )
+        'font-size': '8px'
+        fill: (node) -> 'black'
+        x: (node) -> menuItemX node.radius, 19
+        y: (node) -> (menuItemY node.radius, 19) + 3
+      .on('click', (node) ->
+        viz.trigger('nodeClose', node))
+      .on('mouseover', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.5'))
 
+
+      circles.exit().remove()
+    onTick: noop
+  )
+
+  expandNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      circles = selection.selectAll('circle.expand_node').data((node) -> if node.selected and node.selected then [node] else [])
+      radius = 8
+
+      circles.enter()
+      .append('circle')
+      .classed('expand_node', true)
+      .attr
+        opacity: '0.5'
+        stroke: (node) -> 'black'
+        'stroke-width': (node) -> '2px'
+        border: (node) -> viz.style.forNode(node).get('border-color')
+        cx: (node) -> menuItemX node.radius, 22
+        cy: (node) -> menuItemY node.radius, 22
+        r: radius
+        fill: (node) -> viz.style.forNode(node).get('color')
+      .on('click', (node) ->
+#        viz.trigger('nodeClicked', node)
+        viz.trigger('nodeDblClicked', node))
+      .on('mouseover', ->
+          n = d3.select(this)
+          n.transition().duration(300).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.5'))
+
+      circles.enter()
+      .append('text')
+      .text('\uf067')
+      .attr
+        opacity: '0.5'
+        'text-anchor': 'middle'
+        'pointer-events': 'none'
+        'font-family': 'FontAwesome'
+        'font-size': '8px'
+        x: (node) -> menuItemX node.radius, 22
+        y: (node) -> (menuItemY node.radius, 22) + 2
+      .on('click', (node) ->
+#        viz.trigger('nodeClicked', node)
+        viz.onNodeDblClick('nodeDblClicked', node))
+      .on('mouseover', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.5'))
 
 
       circles.exit().remove()
@@ -113,11 +193,32 @@ do ->
       .attr
         cx: 0
         cy: 0
-        'stroke-width': '8px'
+        'stroke-width': nodeRingStrokeSize + 'px'
 
       circles
       .attr
         r: (node) -> node.radius + 4
+
+      circles.exit().remove()
+
+    onTick: noop
+  )
+
+  removeNodeRing = new neo.Renderer(
+    onGraphChange: (selection) ->
+      circles = selection.selectAll('circle.context-ring').data((node) -> [node])
+      circles.enter()
+      .insert('circle', '.outline')
+      .classed('small-ring', true)
+      .attr
+        cx: (node) -> menuItemX node.radius, 19
+        cy: (node) -> menuItemY node.radius, 19
+        'stroke-width': nodeRingStrokeSize + 'px'
+        r: 10
+
+#      circles
+#      .attr
+#        r: (node) -> node.radius + 4
 
       circles.exit().remove()
 
@@ -193,6 +294,9 @@ do ->
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
   neo.renderers.node.push(removeNode)
+  neo.renderers.node.push(expandNode)
+  neo.renderers.node.push(removeNodeRing)
+#  neo.renderers.node.push(expandNodeRing)
   neo.renderers.relationship.push(arrowPath)
   neo.renderers.relationship.push(relationshipType)
   neo.renderers.relationship.push(relationshipOverlay)
