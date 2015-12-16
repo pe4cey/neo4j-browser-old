@@ -32,7 +32,8 @@ angular.module('neo4jApp.controllers')
     'CircularLayout'
     'GraphExplorer'
     'GraphStyle'
-    ($attrs, $element, $parse, $window, $rootScope, $scope, $interval, CircularLayout, GraphExplorer, GraphStyle) ->
+    'Editor'
+    ($attrs, $element, $parse, $window, $rootScope, $scope, $interval, CircularLayout, GraphExplorer, GraphStyle, Editor) ->
       graphView = null
       @getGraphView = -> return graphView
 
@@ -140,6 +141,13 @@ angular.module('neo4jApp.controllers')
           # New in Angular 1.1.5
           # https://github.com/angular/angular.js/issues/2371
           $rootScope.$apply() unless $rootScope.$$phase
+        )
+        .on('deleteNode', (d) ->
+          Editor.setContent "MATCH (n) WHERE id(n) = " + d.id + " DETACH DELETE n"
+          $scope.focusEditor()
+        ).on('editNode', (d) ->
+          Editor.setContent "MATCH (n) WHERE id(n) = " + d.id + " RETURN n"
+          $scope.focusEditor()
         )
         .on('nodeDblClicked', (d) ->
           d.contextMenuEvent = yes

@@ -186,7 +186,7 @@ do ->
         x: (node) -> menuItemX node.radius, 12
         y: (node) -> (menuItemY node.radius, 12) + 2
 
-      attachContextEvent('nodeEdit', [circle, text], viz)
+      attachContextEvent('editNode', [circle, text], viz)
 
       circles.exit().remove()
     onTick: noop
@@ -202,8 +202,8 @@ do ->
       .classed('contextItem', true)
       .attr
         stroke: (node) -> viz.style.forNode(node).get('border-color')
-        cx: (node) -> menuItemX node.radius, 14
-        cy: (node) -> menuItemY node.radius, 14
+        cx: (node) -> menuItemX node.radius, 12
+        cy: (node) -> menuItemY node.radius, 12
         r: contextMenuItemRadius
         fill: (node) -> viz.style.forNode(node).get('color')
 
@@ -216,11 +216,11 @@ do ->
         'font-family': 'FontAwesome'
         'font-size': '8px'
         fill: (node) -> viz.style.forNode(node).get('text-color-internal')
-        x: (node) -> menuItemX node.radius, 14
-        y: (node) -> (menuItemY node.radius, 14) + 2
+        x: (node) -> menuItemX node.radius, 12
+        y: (node) -> (menuItemY node.radius, 12) + 2
 
 
-      attachContextEvent('nodeDelete', [circle, text], viz)
+      attachContextEvent('deleteNode', [circle, text], viz)
 
       circles.exit().remove()
     onTick: noop
@@ -380,7 +380,7 @@ do ->
   neo.renderers.node.push(expandNode)
   neo.renderers.node.push(unlockNode)
 #  neo.renderers.node.push(editNode)
-#  neo.renderers.node.push(deleteNode)
+  neo.renderers.node.push(deleteNode)
 #  neo.renderers.node.push(removeNodeRing)
 #  neo.renderers.node.push(expandNodeRing)
   neo.renderers.relationship.push(arrowPath)
