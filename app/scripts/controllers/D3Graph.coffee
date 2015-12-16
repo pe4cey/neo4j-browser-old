@@ -89,7 +89,22 @@ angular.module('neo4jApp.controllers')
         d.fixed = yes
         toggleSelection(d)
 
+
+
       initGraphView = (graph) ->
+
+
+        getNodeNeigbours = (d) ->
+          GraphExplorer.exploreNeighbours(d, graph, $scope.displayInternalRelationships)
+          .then(
+            # Success
+            (neighboursResult) =>
+              checkLimitsReached neighboursResult
+              linkDistance = 60
+              CircularLayout.layout(graph.nodes(), d, linkDistance)
+              d.expanded = yes
+              graphView.update()
+          )
 
         checkMaxNodesReached graph
         graphView = new neo.graphView($element[0], measureSize, graph, GraphStyle)
@@ -102,16 +117,32 @@ angular.module('neo4jApp.controllers')
 
         graphView
         .on('nodeClicked', (d) ->
-          nodeClicked d
+          unless d.contextMenuEvent
+            nodeClicked d
+          d.contextMenuEvent = no
         )
         .on('nodeClose', (d) ->
+          d.contextMenuEvent = yes
           GraphExplorer.removeNodesAndRelationships d, graph
           toggleSelection(d)
         )
         .on('nodeUnlock', (d) ->
+          d.contextMenuEvent = yes
           d.fixed = no
+          toggleSelection(null)
+        )
+        .on('nodeExpand', (d) ->
+          d.contextMenuEvent = yes
+          toggleSelection null
+          d.minified = no
+          return if d.expanded
+          getNodeNeigbours(d)
+          # New in Angular 1.1.5
+          # https://github.com/angular/angular.js/issues/2371
+          $rootScope.$apply() unless $rootScope.$$phase
         )
         .on('nodeDblClicked', (d) ->
+          d.contextMenuEvent = yes
           toggleSelection null
           d.minified = no
           return if d.expanded
