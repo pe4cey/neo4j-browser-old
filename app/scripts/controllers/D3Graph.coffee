@@ -108,9 +108,12 @@ angular.module('neo4jApp.controllers')
           GraphExplorer.removeNodesAndRelationships d, graph
           toggleSelection(d)
         )
+        .on('nodeUnlock', (d) ->
+          d.fixed = no
+        )
         .on('nodeDblClicked', (d) ->
           toggleSelection null
-          d.minified = false
+          d.minified = no
           return if d.expanded
           GraphExplorer.exploreNeighbours(d, graph, $scope.displayInternalRelationships)
           .then(

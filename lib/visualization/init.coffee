@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 do ->
   noop = ->
 
-  contentMenuItems = 24
+  contentMenuItems = 30
   nodeRingStrokeSize = 8
 
   menuItemX = (r, p) -> menuItemPosition(r, p).x
@@ -51,8 +51,8 @@ do ->
         opacity: '0.5'
         stroke: (node) -> 'black'
         'stroke-width': (node) -> '2px'
-        cx: (node) -> menuItemX node.radius, 19
-        cy: (node) -> menuItemY node.radius, 19
+        cx: (node) -> menuItemX node.radius, 25
+        cy: (node) -> menuItemY node.radius, 25
         r: radius
         fill: (node) -> viz.style.forNode(node).get('color')
       .on('click', (node) ->
@@ -74,8 +74,8 @@ do ->
         'font-family': 'FontAwesome'
         'font-size': '8px'
         fill: (node) -> 'black'
-        x: (node) -> menuItemX node.radius, 19
-        y: (node) -> (menuItemY node.radius, 19) + 3
+        x: (node) -> menuItemX node.radius, 25
+        y: (node) -> (menuItemY node.radius, 25) + 3
       .on('click', (node) ->
         viz.trigger('nodeClose', node))
       .on('mouseover', ->
@@ -103,8 +103,8 @@ do ->
         stroke: (node) -> 'black'
         'stroke-width': (node) -> '2px'
         border: (node) -> viz.style.forNode(node).get('border-color')
-        cx: (node) -> menuItemX node.radius, 22
-        cy: (node) -> menuItemY node.radius, 22
+        cx: (node) -> menuItemX node.radius, 27
+        cy: (node) -> menuItemY node.radius, 27
         r: radius
         fill: (node) -> viz.style.forNode(node).get('color')
       .on('click', (node) ->
@@ -126,11 +126,61 @@ do ->
         'pointer-events': 'none'
         'font-family': 'FontAwesome'
         'font-size': '8px'
-        x: (node) -> menuItemX node.radius, 22
-        y: (node) -> (menuItemY node.radius, 22) + 2
+        x: (node) -> menuItemX node.radius, 27
+        y: (node) -> (menuItemY node.radius, 27) + 2
       .on('click', (node) ->
-#        viz.trigger('nodeClicked', node)
         viz.onNodeDblClick('nodeDblClicked', node))
+      .on('mouseover', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.5'))
+
+
+      circles.exit().remove()
+    onTick: noop
+  )
+
+  unlockNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      circles = selection.selectAll('circle.unlock_node').data((node) -> if node.selected and node.selected then [node] else [])
+      radius = 8
+
+      circles.enter()
+      .append('circle')
+      .classed('unlock_node', true)
+      .attr
+        opacity: '0.5'
+        stroke: (node) -> 'black'
+        'stroke-width': (node) -> '2px'
+        border: (node) -> viz.style.forNode(node).get('border-color')
+        cx: (node) -> menuItemX node.radius, 29
+        cy: (node) -> menuItemY node.radius, 29
+        r: radius
+        fill: (node) -> viz.style.forNode(node).get('color')
+      .on('click', (node) ->
+        viz.trigger('nodeUnlock', node))
+      .on('mouseover', ->
+          n = d3.select(this)
+          n.transition().duration(300).attr('opacity', '0.9'))
+      .on('mouseout', ->
+        n = d3.select(this)
+        n.transition().duration(300).attr('opacity', '0.5'))
+
+      circles.enter()
+      .append('text')
+      .text('\uf09c')
+      .attr
+        opacity: '0.5'
+        'text-anchor': 'middle'
+        'pointer-events': 'none'
+        'font-family': 'FontAwesome'
+        'font-size': '8px'
+        x: (node) -> menuItemX node.radius, 29
+        y: (node) -> (menuItemY node.radius, 29) + 2
+      .on('click', (node) ->
+        viz.trigger('nodeUnlock', node))
       .on('mouseover', ->
         n = d3.select(this)
         n.transition().duration(300).attr('opacity', '0.9'))
@@ -294,6 +344,7 @@ do ->
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
   neo.renderers.node.push(removeNode)
+  neo.renderers.node.push(unlockNode)
   neo.renderers.node.push(expandNode)
   neo.renderers.node.push(removeNodeRing)
 #  neo.renderers.node.push(expandNodeRing)
