@@ -26,8 +26,9 @@ expressApp.listen(expressApp.get('port'), function() {
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
         height: 600,
-        width: 800
+        width: 800,
+        "node-integration": false
     });
 
-    mainWindow.loadURL('http://localhost:5000');
+    mainWindow.loadURL('http://localhost:' + port);
 });

@@ -1,0 +1,6 @@
+npm install -g electron-packager
+npm install -g electron
+
+cd <to_neo4j_browser_directory>
+
+electron-packager . Neo4jBrowser --ignore=standalone --out=standalone --platform=all --arch=x64 --version=0.36.4 --overwrite
