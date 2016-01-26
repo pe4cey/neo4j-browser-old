@@ -1,0 +1,10 @@
+.drawer.inspector-editor-drawer(ng-controller="InspectorEditorCtrl")
+  .container-editor(ng-show="selectedItem()")
+    resize.resize(resize-container=".result", resize-element=".inspector-editor", resize-min="250", ng-click="toggle()")
+      .hit-area(style="top: 0; bottom:0; width:10px; ")
+      i.fa.fa-chevron-right.resize-icon(ng-show="visible")
+      i.fa.fa-chevron-left.resize-icon(ng-hide="visible")
+    .inspector-editor(ng-show="visible")
+      .inspector-editor-row
+        ul.list-unstyled.list-items
+          li(ng-include="currentItem.editorTmpl")

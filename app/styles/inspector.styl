@@ -3,7 +3,7 @@
 @import 'nib'
 
 inspector-row-height = 21px
-.inspector-footer
+.inspector-footer, .inspector-editor
   // background-color: #EEF1F8
   font-size: 12px
   width: 100%
@@ -22,7 +22,7 @@ inspector-row-height = 21px
     max-height: inspector-row-height
     overflow: hidden
 
-  .inspector-footer-row > ul
+  .inspector-footer-row > ul, .inspector-editor-row > ul
     word-break: break-word
     margin-top: -3px
     li
@@ -81,6 +81,20 @@ inspector-row-height = 21px
         color: white
         background-color: #9195A0
 
+  .inspector-editor-row
+    ul
+      margin: 0
+      .token
+        cursor: default
+  .inspector-editor-row > ul
+    li
+      display: table
+    li.pair
+      clear: both
+      margin: 1px 0
+    li > input
+      margin: 0
+      border: 1px solid grey
 
 .inspector-handle
   position: absolute

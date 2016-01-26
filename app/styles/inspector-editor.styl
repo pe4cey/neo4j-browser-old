@@ -1,0 +1,99 @@
+@import 'variables'
+@import 'mixins'
+@import 'nib'
+
+
+inspector-row-height = 21px
+
+#rightbar
+  position: absolute
+  top: 0
+  bottom: 0
+  right: 0
+  left: auto
+  height: auto
+  width: auto
+  z-index: 99
+
+.resize
+  top: 0
+  bottom: 0
+  width: 10px
+  cursor: pointer
+  background-color: drawer-color-bg
+  font-size: 10px
+  .hit-area
+    top: 0
+    bottom: 0
+    width: 10px
+    position: absolute
+    &:hover
+      cursor: col-resize
+
+  .resize-icon
+    position: absolute
+    top: 50%
+  .rotate-90
+    -webkit-transform: rotate(-90deg)
+    -moz-transform: rotate(-90deg)
+    -ms-transform: rotate(-90deg)
+    -o-transform: rotate(-90deg)
+
+.inspector-editor
+  background-color: drawer-color-bg
+  color: drawer-color-fg
+  padding: 8px 24px
+
+  .close-right
+    color: #333
+    display: block
+    position: absolute
+    top: 0
+    right: 0
+  .pair
+    min-height: 30px
+    .value
+      float none !important
+  .button-row
+    button
+      float :left
+
+  h5
+    color: drawer-color-fg-active
+  button
+    background: transparent
+    color: #fff
+    border: none
+  input
+    padding: 0
+    background: transparent
+
+.inspector-editor-row
+  ul > li
+    display: block
+    width: 100%
+    .pair
+      .key
+        white-space: nowrap
+        overflow: hidden
+        width: 15%
+        text-overflow: ellipsis
+      .value
+        white-space: nowrap
+        text-overflow: ellipsis
+        width: 65%
+.inspector-editor-drawer
+  position: absolute
+  right: 0
+  text-shadow: rgba(0, 0, 0, 0.4) 0px 1px 0px
+  z-index: 99
+  top: 0
+  bottom: 0
+  left: auto
+  &:hover
+    opacity: 1
+  input
+    background: transparent
+
+.container-editor
+  min-width: 10px

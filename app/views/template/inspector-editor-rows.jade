@@ -1,0 +1,53 @@
+script(id="editor/inspector/graphItem.html", type="text/ng-template")
+  div(ng-hide="editing")
+    h5 Node label
+    ul
+      li(ng-if="currentItem.data.isNode", ng-repeat="label in currentItem.data.labels")
+        .token.token-label(ng-style='styleForLabel(label)', ng-bind="label")
+      li(ng-if="!currentItem.data.isNode")
+        .token.token-relationship-type(ng-style='styleForItem(currentItem.data)', ng-bind="currentItem.data.type")
+    h5 Properties
+      button.btn.btn-sm.btn-popup(ng-click="clickEdit()", ng-hide="editing", tooltip="Edit properties", tooltip-placement="top")
+        i.fa.fa-pencil
+        |  Edit
+
+    ul
+      li.empty(ng-if='currentItem.data.propertyList.length == 0') No properties
+      li.pair(ng-repeat='property in currentItem.data.propertyList')
+        .key(ng-bind-template="{{property.key}}: ")
+        .value(ng-bind="property.value", ng-hide="editing")
+
+
+    button.btn.btn-sm.btn-popup(ng-click="clickDeleteItem()", tooltip="Delete item from database", tooltip-placement="top")
+      i.fa.fa-trash
+      |  Delete item
+
+  div.editing(ng-show="editing")
+    h5 Node label
+    ul
+      li(ng-if="currentItem.data.isNode", ng-repeat="label in currentItem.data.labels")
+        .token.token-label(ng-style='styleForLabel(label)', ng-bind="label")
+      li(ng-if="!currentItem.data.isNode")
+        .token.token-relationship-type(ng-style='styleForItem(currentItem.data)', ng-bind="currentItem.data.type")
+    h5 Properties
+      button.btn.btn-sm.btn-popup(ng-click="clickCancel()", tooltip="Cancel changes", tooltip-placement="top")
+        i.fa.fa-times
+        |  Cancel edit
+    ul
+      li.empty(ng-if='currentItem.data.propertyList.length == 0') No properties
+      li.pair(ng-repeat='property in currentItem.data.propertyList')
+        .key(ng-bind-template="{{property.key}}: ")
+        input.value(ng-model="property.value")
+        button.btn.btn-sm.btn-popup(ng-click="deletePair(property)", tooltip="Remove property")
+          i.fa.fa-minus
+      li.pair(ng-repeat='property in newPropertyList')
+        input.key(ng-model="property.key")
+        input.value(ng-model="property.value", ng-blur="savePair(property)", ng-keydown="$event.which === 13 && savePair(property)")
+        button.btn.btn-sm.btn-popup(ng-click="addProperty()", ng-show="validPair(property)", tooltip="Add new property", tooltip-placement="top")
+          i.fa.fa-plus
+        .warning(ng-hide="validPair(property)") {{errorMessage}}
+
+    span.button-row
+      button.btn.btn-sm.btn-popup(ng-click="updateEditor()", tooltip="Update editor with Cypher statement", tooltip-placement="top")
+        i.fa.fa-terminal
+        |  Generate Cypher

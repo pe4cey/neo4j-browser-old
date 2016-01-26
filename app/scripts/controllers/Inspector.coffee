@@ -26,7 +26,8 @@ angular.module('neo4jApp.controllers')
     'GraphStyle'
     'Collection'
     '$timeout'
-    ($scope, graphStyle, Collection, $timeout) ->
+    '$rootScope'
+    ($scope, graphStyle, Collection, $timeout, $rootScope) ->
       $scope.sizes = graphStyle.defaultSizes()
       $scope.arrowWidths = graphStyle.defaultArrayWidths()
       $scope.colors = graphStyle.defaultColors()
@@ -39,27 +40,22 @@ angular.module('neo4jApp.controllers')
         data: item
         type: type
         tmpl: "inspector/#{type}.html"
-
-      triggerInspectorUIUpdate = () ->
-        $timeout(->
-          $scope.inspectorChanged = no
-        , 0)
-
-        $timeout(->
-          $scope.inspectorChanged = yes
-        , 0)
+        editorTmpl: "editor/inspector/#{type}.html"
 
       $scope.onNodeDragToggle = (node) ->
         $scope.inspectorFixed = !!node
 
       $scope.onItemClick = (item, type) ->
+
         if item
-          $scope.currentItem = inspectorItem(item, type)
+          $scope.currentItem = item = inspectorItem(item, type)
           $scope.Inspector.reset($scope.currentItem)
+          if $scope.currentItem.type is 'graphItem'
+            $scope.$broadcast('updateInspector', item)
         else
           $scope.currentItem = null
           $scope.Inspector.reset()
-        triggerInspectorUIUpdate()
+          $scope.$broadcast('updateInspector', $scope.currentItem)
 
       $scope.onItemHover = (item, type) ->
         return if $scope.inspectorFixed
@@ -71,7 +67,6 @@ angular.module('neo4jApp.controllers')
             $scope.Inspector.reset(inspectorItem(item, type))
         else
           $scope.Inspector.reset($scope.currentItem)
-        triggerInspectorUIUpdate()
 
       $scope.styleForItem = (item) ->
         style = graphStyle.forEntity(item)

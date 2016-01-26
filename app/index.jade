@@ -33,6 +33,7 @@ html(class="no-js", lang="en", ng-app="neo4jApp", ng-controller="MainCtrl")
     include views/template/tabs
     include views/template/popups
     include views/template/inspector-rows
+    include views/template/inspector-editor-rows
     include views/template/carousel/carousel
     include views/template/carousel/slide
 
@@ -108,11 +109,13 @@ html(class="no-js", lang="en", ng-app="neo4jApp", ng-controller="MainCtrl")
     script(src='scripts/filters/neo4jdoc.js')
     script(src='scripts/filters/humanReadableBytes.js')
     script(src='scripts/services/Cypher.js')
+    script(src='scripts/services/CypherBuilder.js')
     script(src='scripts/services/Collection.js')
     script(src='scripts/services/Timer.js')
     script(src='scripts/directives/focusOn.js')
     script(src='scripts/services/CSV.js')
-    script(src='scripts/directives/resizable.js')
+    //script(src='scripts/directives/resizable.js')
+    script(src='scripts/directives/resize.js')
     script(src='scripts/directives/fileUpload.js')
     script(src='scripts/directives/neoTable.js')
     script(src='scripts/directives/neoGraph.js')
@@ -122,6 +125,7 @@ html(class="no-js", lang="en", ng-app="neo4jApp", ng-controller="MainCtrl")
     script(src='scripts/directives/divToggler.js')
     script(src='scripts/controllers/D3Graph.js')
     script(src='scripts/directives/editInPlace.js')
+    script(src='scripts/controllers/InspectorEditor.js')
     script(src='scripts/services/Server.js')
     script(src='scripts/controllers/Main.js')
     script(src='scripts/services/Node.js')
