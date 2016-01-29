@@ -145,25 +145,6 @@ angular.module('neo4jApp.controllers')
           Editor.setContent "MATCH (n) WHERE id(n) = " + d.id + " RETURN n"
           $scope.focusEditor()
         )
-        .on('nodeDblClicked', (d) ->
-          d.contextMenuEvent = yes
-          toggleSelection null
-          d.minified = no
-          return if d.expanded
-          GraphExplorer.exploreNeighbours(d, graph, $scope.displayInternalRelationships)
-          .then(
-              # Success
-            (neighboursResult) =>
-              checkLimitsReached neighboursResult
-              linkDistance = 60
-              CircularLayout.layout(graph.nodes(), d, linkDistance)
-              d.expanded = yes
-              graphView.update()
-          )
-          # New in Angular 1.1.5
-          # https://github.com/angular/angular.js/issues/2371
-          $rootScope.$apply() unless $rootScope.$$phase
-        )
         .on('relationshipClicked', (d) ->
           toggleSelection(d)
         )

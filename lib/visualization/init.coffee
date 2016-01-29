@@ -30,10 +30,10 @@ do ->
     itemNumber = itemNumber-1
     startAngle = ((2*Math.PI)/numberOfItemsInContextMenu) * itemNumber
     endAngle = startAngle + ((2*Math.PI)/numberOfItemsInContextMenu)
-    innerRadius = if radius is 0 then radius else  Math.max(radius + 8, 20)
+    innerRadius = Math.max(radius + 8, 20)
     d3.svg.arc().innerRadius(innerRadius).outerRadius(innerRadius + width).startAngle(startAngle).endAngle(endAngle)
 
-  startArc = (itemNumber) -> arc(1, itemNumber, 1)()
+  startArc = (node, itemNumber) -> arc(node.radius, itemNumber, 1)()
 
   getSelectedNode = (node) -> if node.selected then [node] else []
 
@@ -52,7 +52,7 @@ do ->
       .classed('remove_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: startArc(itemNumber)
+        d: (node) -> arc(node.radius, itemNumber, 1)()
 
       text = path.enter()
       .append('text')
@@ -67,17 +67,25 @@ do ->
 
       attachContextEvent('nodeClose', [tab, text], viz)
 
-      path.exit().remove()
 
       tab
       .transition()
       .duration(200)
-      .attr("d", (node) -> arc(node.radius, itemNumber)())
+      .attr
+        d: (node) -> arc(node.radius, itemNumber)()
 
       text
       .transition()
       .duration(200)
       .attr("transform", "scale(1)")
+
+      path
+      .exit()
+      .transition()
+      .duration(200)
+      .attr
+        d: (node) -> arc(node.radius, itemNumber, 1)()
+      .remove()
 
     onTick: noop
 
@@ -93,12 +101,12 @@ do ->
       .classed('expand_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: startArc(itemNumber)
+        d: (node) -> startArc(node, itemNumber)
 
       text = path.enter()
       .append('text')
       .classed('context-menu-item', true)
-      .text('\uf067')
+      .text('\uf0b2')
       .attr("transform", "scale(0.1)")
       .attr
         'font-family': 'FontAwesome'
@@ -111,15 +119,21 @@ do ->
       tab
       .transition()
       .duration(200)
-      .attr("d", (node) ->
-        arc(node.radius, itemNumber)())
+      .attr
+          d: (node) -> arc(node.radius, itemNumber)()
 
       text
       .transition()
       .duration(200)
       .attr("transform", "scale(1)")
 
-      path.exit().remove()
+      path
+      .exit()
+      .transition()
+      .duration(200)
+      .attr
+          d: (node) -> arc(node.radius, itemNumber, 1)()
+      .remove()
     onTick: noop
   )
 
@@ -133,7 +147,7 @@ do ->
       .classed('unlock_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: startArc(itemNumber)
+        d: (node) -> startArc(node, itemNumber)
 
       text = path.enter()
       .append('text')
@@ -151,15 +165,22 @@ do ->
       tab
       .transition()
       .duration(200)
-      .attr("d", (node) ->
-        arc(node.radius, itemNumber)())
+      .attr
+          d: (node) -> arc(node.radius, itemNumber)()
 
       text
       .transition()
       .duration(200)
       .attr("transform", "scale(1)")
 
-      path.exit().remove()
+      path
+      .exit()
+      .transition()
+      .duration(200)
+      .attr
+          d: (node) -> arc(node.radius, itemNumber, 1)()
+      .remove()
+
     onTick: noop
   )
 
