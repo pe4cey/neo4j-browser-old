@@ -23,6 +23,109 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 do ->
   noop = ->
 
+  nodeRingStrokeSize = 8
+  numberOfItemsInContextMenu = 3
+
+  arc = (node, itemNumber) ->
+    itemNumber = itemNumber-1
+    startAngle = ((2*Math.PI)/numberOfItemsInContextMenu) * itemNumber
+    endAngle = startAngle + ((2*Math.PI)/numberOfItemsInContextMenu)
+    innerRadius = Math.max(node.radius + 8, 20)
+    d3.svg.arc().innerRadius(innerRadius).outerRadius(innerRadius + 30).startAngle(startAngle).endAngle(endAngle)
+
+  getSelectedNode = (node) -> if node.selected then [node] else []
+
+  attachContextEvent = (event, elems, viz) ->
+    for elem in elems
+      elem.on('click', (node) ->
+        viz.trigger(event, node))
+
+  donutRemoveNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      itemNumber = 1
+      path = selection.selectAll('path.remove_node').data(getSelectedNode)
+
+      tab = path.enter()
+      .append('path')
+      .classed('remove_node', true)
+      .classed('context-menu-item', true)
+      .attr
+        d: (node) -> arc(node, itemNumber)()
+
+      text = path.enter()
+      .append('text')
+      .classed('context-menu-item', true)
+      .text('\uf00d')
+      .attr
+        'font-family': 'FontAwesome'
+        fill: (node) -> viz.style.forNode(node).get('text-color-internal')
+        x: (node) -> arc(node, itemNumber).centroid()[0]  - 4
+        y: (node) -> arc(node, itemNumber).centroid()[1]
+
+      attachContextEvent('nodeClose', [tab, text], viz)
+
+      path.exit().remove()
+
+    onTick: noop
+
+  )
+
+  donutExpandNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      itemNumber = 2
+      path = selection.selectAll('path.expand_node').data(getSelectedNode)
+
+      tab = path.enter()
+      .append("path")
+      .classed('expand_node', true)
+      .classed('context-menu-item', true)
+      .attr
+        d: (node) -> arc(node, itemNumber)()
+
+      text = path.enter()
+      .append('text')
+      .classed('context-menu-item', true)
+      .text('\uf067')
+      .attr
+        'font-family': 'FontAwesome'
+        fill: (node) -> viz.style.forNode(node).get('text-color-internal')
+        x: (node) -> arc(node, itemNumber).centroid()[0]
+        y: (node) -> arc(node, itemNumber).centroid()[1] + 4
+
+      attachContextEvent('nodeExpand', [tab, text], viz)
+
+      path.exit().remove()
+    onTick: noop
+  )
+
+  donutUnlockNode = new neo.Renderer(
+    onGraphChange: (selection, viz) ->
+      itemNumber = 3
+      path = selection.selectAll('path.unlock_node').data(getSelectedNode)
+
+      tab = path.enter()
+      .append("path")
+      .classed('unlock_node', true)
+      .classed('context-menu-item', true)
+      .attr
+        d: (node) -> arc(node, itemNumber)()
+
+      text = path.enter()
+      .append('text')
+      .classed('context-menu-item', true)
+      .text('\uf09c')
+      .attr
+        'font-family': 'FontAwesome'
+        fill: (node) -> viz.style.forNode(node).get('text-color-internal')
+        x: (node) -> arc(node, itemNumber).centroid()[0] + 4
+        y: (node) -> arc(node, itemNumber).centroid()[1]
+
+      attachContextEvent('nodeUnlock', [tab], viz)
+
+      path.exit().remove()
+    onTick: noop
+  )
+
   nodeOutline = new neo.Renderer(
     onGraphChange: (selection, viz) ->
       circles = selection.selectAll('circle.outline').data((node) -> [node])
@@ -73,7 +176,7 @@ do ->
       .attr
         cx: 0
         cy: 0
-        'stroke-width': '8px'
+        'stroke-width': nodeRingStrokeSize + 'px'
 
       circles
       .attr
@@ -152,6 +255,9 @@ do ->
   neo.renderers.node.push(nodeOutline)
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
+  neo.renderers.node.push(donutExpandNode)
+  neo.renderers.node.push(donutRemoveNode)
+  neo.renderers.node.push(donutUnlockNode)
   neo.renderers.relationship.push(arrowPath)
   neo.renderers.relationship.push(relationshipType)
   neo.renderers.relationship.push(relationshipOverlay)

@@ -50,7 +50,7 @@ text
     .overlay
       opacity: .3
 
-.outline, .ring
+.outline, .ring, .context-menu-item
   cursor: pointer
 
 .zoom-holder
@@ -76,3 +76,19 @@ text
       cursor: auto
       &:hover
         color: #9b9da2
+
+.remove_node .expand_node
+  cursor: pointer
+  &:hover
+    border: 2px black solid
+
+path.context-menu-item
+  stroke-width: 2px
+  fill: #d2d5da
+  stroke: #f9fbfd
+
+text.context-menu-item
+  fill: #fff
+  text-anchor: middle
+  pointer-events: none
+  font-size: 12px

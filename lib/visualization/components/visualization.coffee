@@ -55,8 +55,6 @@ neo.viz = (el, measureSize, graph, layout, style) ->
     updateViz = no
     viz.trigger('nodeClicked', node)
 
-  onNodeDblClick = (node) => viz.trigger('nodeDblClicked', node)
-
   onNodeDragToggle = (node) -> viz.trigger('nodeDragToggle', node)
 
   onRelationshipClick = (relationship) =>
@@ -252,7 +250,7 @@ neo.viz = (el, measureSize, graph, layout, style) ->
 
     nodeGroups
     .classed("selected", (node) -> node.selected)
-  
+
     for renderer in neo.renderers.node
       nodeGroups.call(renderer.onGraphChange, viz);
 
@@ -277,7 +275,6 @@ neo.viz = (el, measureSize, graph, layout, style) ->
 
   clickHandler = neo.utils.clickHandler()
   clickHandler.on 'click', onNodeClick
-  clickHandler.on 'dblclick', onNodeDblClick
 
   d3.select(root.node().parentNode).select('button.zoom_in').on('click', zoomInClick)
   d3.select(root.node().parentNode).select('button.zoom_out').on('click', zoomOutClick)

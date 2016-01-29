@@ -97,9 +97,11 @@ angular.module('neo4jApp.controllers')
 
       $scope.selectArrowWidth = (item, size) ->
         item.style = graphStyle.changeForSelector(item.style.selector, size)
+        $scope.$emit 'close.contextMenu'
 
       $scope.selectCaption = (item, caption) ->
         item.style = graphStyle.changeForSelector(item.style.selector, { caption: caption})
+        $scope.$emit 'close.contextMenu'
 
       $scope.isSelectedCaption = (item, caption) ->
         grassProps = item.style.props
@@ -107,9 +109,11 @@ angular.module('neo4jApp.controllers')
 
       $scope.selectScheme = (item, scheme) ->
         item.style = graphStyle.changeForSelector(item.style.selector, angular.copy(scheme))
+        $scope.$emit 'close.contextMenu'
 
       $scope.selectSize = (item, size) ->
         item.style = graphStyle.changeForSelector(item.style.selector, size)
+        $scope.$emit 'close.contextMenu'
 
       arrowDisplayWidths = ("#{5 + 3*i}px" for i in [0..10])
       $scope.arrowDisplayWidth = (idx) ->
@@ -119,5 +123,10 @@ angular.module('neo4jApp.controllers')
       $scope.nodeDisplaySize = (idx) ->
         width: nodeDisplaySizes[idx]
         height: nodeDisplaySizes[idx]
+
+      $scope.$watch('style', (oldValue, newValue) ->
+        unless oldValue is newValue or newValue is not null
+          $scope.$emit 'close.contextMenu'
+      )
 
   ]
