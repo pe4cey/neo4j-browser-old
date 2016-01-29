@@ -26,12 +26,14 @@ do ->
   nodeRingStrokeSize = 8
   numberOfItemsInContextMenu = 3
 
-  arc = (node, itemNumber) ->
+  arc = (radius, itemNumber, width = 30) ->
     itemNumber = itemNumber-1
     startAngle = ((2*Math.PI)/numberOfItemsInContextMenu) * itemNumber
     endAngle = startAngle + ((2*Math.PI)/numberOfItemsInContextMenu)
-    innerRadius = Math.max(node.radius + 8, 20)
-    d3.svg.arc().innerRadius(innerRadius).outerRadius(innerRadius + 30).startAngle(startAngle).endAngle(endAngle)
+    innerRadius = if radius is 0 then radius else  Math.max(radius + 8, 20)
+    d3.svg.arc().innerRadius(innerRadius).outerRadius(innerRadius + width).startAngle(startAngle).endAngle(endAngle)
+
+  startArc = (itemNumber) -> arc(1, itemNumber, 1)()
 
   getSelectedNode = (node) -> if node.selected then [node] else []
 
@@ -50,21 +52,32 @@ do ->
       .classed('remove_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: (node) -> arc(node, itemNumber)()
+        d: startArc(itemNumber)
 
       text = path.enter()
       .append('text')
       .classed('context-menu-item', true)
       .text('\uf00d')
+      .attr("transform", "scale(0.1)")
       .attr
         'font-family': 'FontAwesome'
         fill: (node) -> viz.style.forNode(node).get('text-color-internal')
-        x: (node) -> arc(node, itemNumber).centroid()[0]  - 4
-        y: (node) -> arc(node, itemNumber).centroid()[1]
+        x: (node) -> arc(node.radius, itemNumber).centroid()[0]  - 4
+        y: (node) -> arc(node.radius, itemNumber).centroid()[1]
 
       attachContextEvent('nodeClose', [tab, text], viz)
 
       path.exit().remove()
+
+      tab
+      .transition()
+      .duration(200)
+      .attr("d", (node) -> arc(node.radius, itemNumber)())
+
+      text
+      .transition()
+      .duration(200)
+      .attr("transform", "scale(1)")
 
     onTick: noop
 
@@ -80,19 +93,31 @@ do ->
       .classed('expand_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: (node) -> arc(node, itemNumber)()
+        d: startArc(itemNumber)
 
       text = path.enter()
       .append('text')
       .classed('context-menu-item', true)
       .text('\uf067')
+      .attr("transform", "scale(0.1)")
       .attr
         'font-family': 'FontAwesome'
         fill: (node) -> viz.style.forNode(node).get('text-color-internal')
-        x: (node) -> arc(node, itemNumber).centroid()[0]
-        y: (node) -> arc(node, itemNumber).centroid()[1] + 4
+        x: (node) -> arc(node.radius, itemNumber).centroid()[0]
+        y: (node) -> arc(node.radius, itemNumber).centroid()[1] + 4
 
       attachContextEvent('nodeExpand', [tab, text], viz)
+
+      tab
+      .transition()
+      .duration(200)
+      .attr("d", (node) ->
+        arc(node.radius, itemNumber)())
+
+      text
+      .transition()
+      .duration(200)
+      .attr("transform", "scale(1)")
 
       path.exit().remove()
     onTick: noop
@@ -108,19 +133,31 @@ do ->
       .classed('unlock_node', true)
       .classed('context-menu-item', true)
       .attr
-        d: (node) -> arc(node, itemNumber)()
+        d: startArc(itemNumber)
 
       text = path.enter()
       .append('text')
       .classed('context-menu-item', true)
       .text('\uf09c')
+      .attr("transform", "scale(0.1)")
       .attr
         'font-family': 'FontAwesome'
         fill: (node) -> viz.style.forNode(node).get('text-color-internal')
-        x: (node) -> arc(node, itemNumber).centroid()[0] + 4
-        y: (node) -> arc(node, itemNumber).centroid()[1]
+        x: (node) -> arc(node.radius, itemNumber).centroid()[0] + 4
+        y: (node) -> arc(node.radius, itemNumber).centroid()[1]
 
       attachContextEvent('nodeUnlock', [tab], viz)
+
+      tab
+      .transition()
+      .duration(200)
+      .attr("d", (node) ->
+        arc(node.radius, itemNumber)())
+
+      text
+      .transition()
+      .duration(200)
+      .attr("transform", "scale(1)")
 
       path.exit().remove()
     onTick: noop
