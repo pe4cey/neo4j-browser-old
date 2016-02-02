@@ -37,13 +37,11 @@ do ->
 
   getSelectedNode = (node) -> if node.selected then [node] else []
 
-  onMenuMouseOver = (viz, node) ->
-    viz.trigger('menuMouseOver', node)
-  onMenuMouseOut = (viz, node) ->
-    viz.trigger('menuMouseOut', node)
-
   attachContextEvent = (event, elems, viz, content, label) ->
     for elem in elems
+      elem.on('mousedown.drag', ->
+        d3.event.stopPropagation()
+        null)
       elem.on('mouseup', (node) ->
         viz.trigger(event, node))
       elem.on('mouseover', (node) ->
@@ -51,10 +49,10 @@ do ->
           menuSelection: event
           menuContent: content
           label:label
-        viz.trigger(onMenuMouseOver, node))
+        viz.trigger('menuMouseOver', node))
       elem.on('mouseout', (node) ->
         delete node.contextMenu
-        viz.trigger(onMenuMouseOut, node))
+        viz.trigger('menuMouseOut', node))
 
   donutRemoveNode = new neo.Renderer(
     onGraphChange: (selection, viz) ->
@@ -326,9 +324,9 @@ do ->
   neo.renderers.node.push(nodeOutline)
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
-  neo.renderers.menu.push(donutExpandNode)
-  neo.renderers.menu.push(donutRemoveNode)
-  neo.renderers.menu.push(donutUnlockNode)
+#  neo.renderers.menu.push(donutExpandNode)
+#  neo.renderers.menu.push(donutRemoveNode)
+#  neo.renderers.menu.push(donutUnlockNode)
   neo.renderers.relationship.push(arrowPath)
   neo.renderers.relationship.push(relationshipType)
   neo.renderers.relationship.push(relationshipOverlay)
