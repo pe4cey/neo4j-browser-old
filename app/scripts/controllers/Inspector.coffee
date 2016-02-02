@@ -65,7 +65,10 @@ angular.module('neo4jApp.controllers')
         return if $scope.inspectorFixed
 
         if item
-          $scope.Inspector.reset(inspectorItem(item, type))
+          if item.contextMenu?
+            $scope.Inspector.reset(inspectorItem(item.contextMenu, "contextMenu"))
+          else
+            $scope.Inspector.reset(inspectorItem(item, type))
         else
           $scope.Inspector.reset($scope.currentItem)
         triggerInspectorUIUpdate()

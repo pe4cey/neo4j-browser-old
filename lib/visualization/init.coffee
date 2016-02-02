@@ -37,10 +37,24 @@ do ->
 
   getSelectedNode = (node) -> if node.selected then [node] else []
 
-  attachContextEvent = (event, elems, viz) ->
+  onMenuMouseOver = (viz, node) ->
+    viz.trigger('menuMouseOver', node)
+  onMenuMouseOut = (viz, node) ->
+    viz.trigger('menuMouseOut', node)
+
+  attachContextEvent = (event, elems, viz, content, label) ->
     for elem in elems
-      elem.on('click', (node) ->
+      elem.on('mouseup', (node) ->
         viz.trigger(event, node))
+      elem.on('mouseover', (node) ->
+        node.contextMenu =
+          menuSelection: event
+          menuContent: content
+          label:label
+        viz.trigger(onMenuMouseOver, node))
+      elem.on('mouseout', (node) ->
+        delete node.contextMenu
+        viz.trigger(onMenuMouseOut, node))
 
   donutRemoveNode = new neo.Renderer(
     onGraphChange: (selection, viz) ->
@@ -65,8 +79,7 @@ do ->
         x: (node) -> arc(node.radius, itemNumber).centroid()[0]  - 4
         y: (node) -> arc(node.radius, itemNumber).centroid()[1]
 
-      attachContextEvent('nodeClose', [tab, text], viz)
-
+      attachContextEvent('nodeClose', [tab, text], viz, "Remove node from the visualization", "\uf00d")
 
       tab
       .transition()
@@ -114,7 +127,7 @@ do ->
         x: (node) -> arc(node.radius, itemNumber).centroid()[0]
         y: (node) -> arc(node.radius, itemNumber).centroid()[1] + 4
 
-      attachContextEvent('nodeExpand', [tab, text], viz)
+      attachContextEvent('nodeExpand', [tab, text], viz, "Expand child relationships", "\uf0b2")
 
       tab
       .transition()
@@ -160,7 +173,7 @@ do ->
         x: (node) -> arc(node.radius, itemNumber).centroid()[0] + 4
         y: (node) -> arc(node.radius, itemNumber).centroid()[1]
 
-      attachContextEvent('nodeUnlock', [tab], viz)
+      attachContextEvent('nodeUnlock', [tab], viz, "Unlock the node to relayout the graph", "\uf09c")
 
       tab
       .transition()
@@ -313,9 +326,9 @@ do ->
   neo.renderers.node.push(nodeOutline)
   neo.renderers.node.push(nodeCaption)
   neo.renderers.node.push(nodeRing)
-  neo.renderers.node.push(donutExpandNode)
-  neo.renderers.node.push(donutRemoveNode)
-  neo.renderers.node.push(donutUnlockNode)
+  neo.renderers.menu.push(donutExpandNode)
+  neo.renderers.menu.push(donutRemoveNode)
+  neo.renderers.menu.push(donutUnlockNode)
   neo.renderers.relationship.push(arrowPath)
   neo.renderers.relationship.push(relationshipType)
   neo.renderers.relationship.push(relationshipOverlay)

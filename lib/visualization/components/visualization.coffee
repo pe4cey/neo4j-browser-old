@@ -252,7 +252,10 @@ neo.viz = (el, measureSize, graph, layout, style) ->
     .classed("selected", (node) -> node.selected)
 
     for renderer in neo.renderers.node
-      nodeGroups.call(renderer.onGraphChange, viz);
+      nodeGroups.call(renderer.onGraphChange, viz)
+
+    for renderer in neo.renderers.menu
+      nodeGroups.call(renderer.onGraphChange, viz)
 
     nodeGroups.exit().remove();
 
