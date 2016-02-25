@@ -69,6 +69,7 @@ module.exports = function(config) {
       'app/components/auth0-angular/build/auth0-angular.min.js',
       'app/components/angularfire/dist/angularfire.min.js',
       'app/components/angular-jwt/dist/angular-jwt.min.js',
+      'app/components/neo4j-javascript-driver/lib/browser/neo4j-web.min.js',
       'app/scripts/*.coffee',
       'lib/*.coffee',
       'app/scripts/**/*.coffee',

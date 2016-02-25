@@ -25,10 +25,7 @@ getDocument = (content) ->
     id: 'ssdf-sdfsdf-sdfsdf-sfsdf',
     name: 'Unnamed docuemnt'
   }
-
-describe 'Utils: firstWord', () ->
-
-
+describe 'Utils', () ->
 
   # load the service's module
   beforeEach module 'neo4jApp.utils'
