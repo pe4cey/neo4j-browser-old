@@ -422,6 +422,7 @@ angular.module('neo4jApp')
                   responseTime: timer.stop().time()
                   table: response
                   graph: extractGraphModel(response, CypherGraphModel)
+                  notifications: response.notifications
                 )
               ,
               (r) ->
