@@ -28,10 +28,13 @@ angular.module('neo4jApp.controllers')
     '$timeout'
     'Editor'
     'CypherBuilder'
-    ($scope, graphStyle, Collection, $timeout, Editor, CypherBuilder) ->
+    'Settings'
+    ($scope, graphStyle, Collection, $timeout, Editor, CypherBuilder, settings) ->
       $scope.visible = no
 
       $scope.$on 'updateInspector', ($event, data) ->
+        unless settings.experimentalFeatures then return
+
         originalItem = angular.copy(data)
 
         $scope.selectedItem = ->
