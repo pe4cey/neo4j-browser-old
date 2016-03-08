@@ -26,7 +26,7 @@ angular.module('neo4jApp.services')
   '$base64'
   (localStorageService, $base64) ->
     cached_authorization_data = localStorageService.get('authorization_data') || ''
-    cached_store_credentials = null
+    cached_retain_connection_credentials = null
     cached_credential_timeout = null
     @setAuthData = (authdata) ->
       return unless authdata
@@ -34,10 +34,10 @@ angular.module('neo4jApp.services')
     @setEncodedAuthData = (encoded) ->
       return unless encoded
       cached_authorization_data = encoded
-      if @getPolicies().storeCredentials isnt no
+      if @getPolicies().retainConnectionCredentials isnt no
         localStorageService.set('authorization_data', encoded)
     @persistCachedAuthData = ->
-      if @getPolicies().storeCredentials isnt no
+      if @getPolicies().retainConnectionCredentials isnt no
         localStorageService.set('authorization_data', cached_authorization_data)
     @clearAuthData = ->
       localStorageService.remove('authorization_data')
@@ -49,14 +49,14 @@ angular.module('neo4jApp.services')
     @getPlainAuthData = ->
       data = @getAuthData()
       if data then $base64.decode(data) else ''
-    @setStoreCredentials = (storeCredentials) ->
-      cached_store_credentials = storeCredentials
+    @setStoreCredentials = (retainConnectionCredentials) ->
+      cached_retain_connection_credentials = retainConnectionCredentials
     @setCredentialTimeout = (credentialTimeout) ->
       cached_credential_timeout = credentialTimeout
     @getPolicies = ->
-      return {storeCredentials: cached_store_credentials, credentialTimeout: cached_credential_timeout}
+      return {retainConnectionCredentials: cached_retain_connection_credentials, credentialTimeout: cached_credential_timeout}
     @clearPolicies = ->
-      cached_store_credentials = null
+      cached_retain_connection_credentials = null
       cached_credential_timeout = null
     @
 ]
