@@ -51,7 +51,7 @@ angular.module('neo4jApp.services')
         loadUDC: ->
           Intercom.load()
           Intercom.reload()
-          
+
         unloadUDC: ->
           Intercom.unload()
 
@@ -82,7 +82,7 @@ angular.module('neo4jApp.services')
                       }
                     ]
                   })
-                Intercom.event('connect', {
+                Intercom.eventevent('connect', {
                     store_id: @data.store_id
                     neo4j_version: @data.neo4j_version
                     client_starts: @data.client_starts
@@ -93,9 +93,15 @@ angular.module('neo4jApp.services')
                   })
 
         connectUser: ->
+          @syncUserData = localStorageService.get("ntn_profile") || null
           userData = if Settings.shouldReportUdc then @data else {}
           userData.name = Settings.userName
+          if @syncUserData?
+            userData.email = @syncUserData.email
+            userData.identifier = @syncUserData.user_id
+
           Intercom.user(@data.uuid, userData)
+          Intercom.update(userData)
 
         pingLater: (event) =>
           timer = $timeout(

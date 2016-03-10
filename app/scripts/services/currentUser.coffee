@@ -31,7 +31,8 @@ angular.module('neo4jApp.services')
   'jwtHelper'
   '$q'
   '$rootScope'
-  (Settings, Editor, AuthService, NTN, localStorageService, AuthDataService, jwtHelper, $q, $rootScope) ->
+  'UsageDataCollectionService'
+  (Settings, Editor, AuthService, NTN, localStorageService, AuthDataService, jwtHelper, $q, $rootScope, UDC) ->
     class CurrentUser
       _user: {}
       store: null
