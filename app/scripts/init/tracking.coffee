@@ -8,6 +8,9 @@ angular.module('neo4jApp')
       trackingObject.user_id = data.user_id
       trackingObject.name = data.name
       if data.email? then trackingObject.email = data.email
-
+      UDC.updateSyncUser(data)
       UDC.trackEvent("syncAuthenticated", trackingObject)
+    $rootScope.$on 'ntn:logout', ->
+      UDC.trackEvent("syncLogout")
+      UDC.updateUserOnLogout()
 ]

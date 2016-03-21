@@ -31,6 +31,7 @@ angular.module('neo4jApp.services')
 
       class UsageDataCollectionService
         constructor: ->
+          @synced = no
           @data = localStorageService.get(storageKey)
           @data = @reset() unless angular.isObject(@data)
           @data.client_starts = (@data.client_starts || 0) + 1
@@ -138,6 +139,9 @@ angular.module('neo4jApp.services')
           @connectUser()
           Intercom.toggle()
 
+        displayMessenger: ->
+          yes
+
         showMessenger: ->
           @connectUser()
           Intercom.showMessenger()
@@ -148,6 +152,18 @@ angular.module('neo4jApp.services')
 
         trackEvent: (name, data) ->
           Intercom.event(name, data)
+
+        updateSyncUser: (data) ->
+          @reset()
+          @set('uuid', data.user_id)
+          @loadUDC()
+          @connectUser if Settings.shouldReportUdc
+
+        updateUserOnLogout :() ->
+          @unloadUDC
+          @reset()
+          @loadUDC()
+          @connectUser if Settings.shouldReportUdc
 
       new UsageDataCollectionService()
   ]

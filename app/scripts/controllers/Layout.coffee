@@ -55,6 +55,9 @@ angular.module('neo4jApp.controllers')
       $scope.toggleMessenger = () ->
         UsageDataCollectionService.toggleMessenger()
 
+      $scope.displayMessenger = () ->
+        UsageDataCollectionService.displayMessenger()
+
       $scope.showMessenger = () ->
         UsageDataCollectionService.showMessenger()
         

@@ -72,11 +72,14 @@ angular.module('neo4jApp.services')
           args = arguments
           $timeout(-> $window.Intercom.apply(that, args))
 
-        user: (userID, userData) ->
+        user: (userID, userData, hidden = false) ->
           return unless @_Intercom
           intercomSettings = {
             app_id: 'lq70afwx'
             user_id: userID
+#            widget: {
+#              activator: '#messenger-button'
+#            }
           }
           angular.extend(intercomSettings, userData)
           if not @booted

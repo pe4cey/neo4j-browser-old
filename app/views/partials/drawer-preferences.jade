@@ -11,7 +11,7 @@
         label(for="shouldReportUdc")
           input#shouldReportUdc(type="checkbox", ng-model="settings.shouldReportUdc", ng-change="save()")
           span &nbsp; Share non-sensitive data?
-      button.btn.btn-default.btn-sm(ng-click="showMessenger()")
+      button#messenger-button.btn.btn-default.btn-sm(ng-click="showMessenger()")
         span.glyphicon.glyphicon-envelope &nbsp;Messenger
 
     h5 User Interface
