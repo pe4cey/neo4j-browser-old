@@ -81,14 +81,18 @@ angular.module('neo4jApp.services')
             q.resolve r
           ,
           (r) ->
-            that.isConnected().then(
-              (r) ->
-                q.resolve r
-              ,
-              (r) ->
-                ConnectionStatusService.setConnected no
-                q.reject r
-            )
+            if ConnectionStatusService.connectionAuthData.length > 0
+              that.isConnected().then(
+                (r) ->
+                  q.resolve r
+                ,
+                (r) ->
+                  ConnectionStatusService.setConnected no
+                  q.reject r
+              )
+            else
+              ConnectionStatusService.setConnected no
+              q.reject r
         )
         q.promise
 
@@ -110,10 +114,11 @@ angular.module('neo4jApp.services')
       makeRequest: (withoutCredentials = no) ->
         ProtocolFactory.getAuthService().makeRequest(withoutCredentials)
 
-      forget: =>
+      forget: ->
         if ConnectionStatusService.connectedAsUser()
           clearConnectionAuthData()
-        @hasValidAuthorization()
+        ConnectionStatusService.setConnected no
+#        @hasValidAuthorization()
 
       setNewPassword: (old_passwd, new_passwd) ->
         that = @
