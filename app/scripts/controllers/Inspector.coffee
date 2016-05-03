@@ -99,11 +99,9 @@ angular.module('neo4jApp.controllers')
         Inspector.visible = !Inspector.visible
 
       $scope.selectArrowWidth = (item, size) ->
-        $scope.$emit 'close.contextMenu'
         item.style = graphStyle.changeForSelector(item.style.selector, size)
 
       $scope.selectCaption = (item, caption) ->
-        $scope.$emit 'close.contextMenu'
         item.style = graphStyle.changeForSelector(item.style.selector, { caption: caption})
 
       $scope.isSelectedCaption = (item, caption) ->
